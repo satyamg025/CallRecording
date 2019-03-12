@@ -10,6 +10,9 @@ import java.util.List;
  */
 
 public class DataPOJO {
+    @SerializedName("_id")
+    @Expose
+    private String id;
     @SerializedName("updatedAt")
     @Expose
     private String updatedAt;
@@ -33,7 +36,15 @@ public class DataPOJO {
     private Integer empId;
     @SerializedName("employees")
     @Expose
-    private List<Object> employees = null;
+    private List<String> employees = null;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUpdatedAt() {
         return updatedAt;
@@ -91,11 +102,11 @@ public class DataPOJO {
         this.empId = empId;
     }
 
-    public List<Object> getEmployees() {
+    public List<String> getEmployees() {
         return employees;
     }
 
-    public void setEmployees(List<Object> employees) {
+    public void setEmployees(List<String> employees) {
         this.employees = employees;
     }
 

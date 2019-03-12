@@ -50,9 +50,9 @@ public class dialog_change_pwd extends DialogFragment {
         submit=(Button) parentView.findViewById(R.id.submit);
         cancel=(Button) parentView.findViewById(R.id.cancel);
 
-        submit.setOnClickListener(new View.OnClickListener() {
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(DialogInterface dialogInterface, int i) {
                 if(old_pwd.getText().toString().equals("") || new_pwd.getText().toString().equals("") || con_pwd.getText().toString().equals("")){
                     Toast.makeText(getActivity(),"Please fill all fields",Toast.LENGTH_LONG).show();
                 }
@@ -66,7 +66,7 @@ public class dialog_change_pwd extends DialogFragment {
                     progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setMessage("Loading...");
                     progressDialog.setCancelable(false);
-                     progressDialog.show();
+                    progressDialog.show();
 
                     ChangePasswordRequest memberInfoRequest = ServiceGenerator.createService(ChangePasswordRequest.class, DbHandler.getString(getActivity(), "bearer", ""));
                     Call<RemarkPOJO> memberInfoPOJOCall = memberInfoRequest.call(changePasswordBody);
@@ -124,12 +124,11 @@ public class dialog_change_pwd extends DialogFragment {
                     });
                 }
             }
-
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(DialogInterface dialogInterface, int i) {
                 dismiss();
             }
         });

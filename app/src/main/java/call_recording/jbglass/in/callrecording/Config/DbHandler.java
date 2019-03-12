@@ -1,17 +1,30 @@
 package call_recording.jbglass.in.callrecording.Config;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
+
 import call_recording.jbglass.in.callrecording.Activity.LoginActivity;
 import call_recording.jbglass.in.callrecording.Activity.MainActivity;
+import call_recording.jbglass.in.callrecording.Activity.ManagerActivity;
+import call_recording.jbglass.in.callrecording.Activity.StartActivity;
+import call_recording.jbglass.in.callrecording.Models.MemberInfoPOJO;
+import call_recording.jbglass.in.callrecording.Networking.ServiceGenerator;
+import call_recording.jbglass.in.callrecording.Requests.MemberInfoRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DbHandler {
 
@@ -96,17 +109,71 @@ public class DbHandler {
         }
     }
 
-    public static void setSession(Context context, String bearer) {
+    public static void setSession(final Context context, final String bearer, final String user_type) {
         if (context != null) {
-            //FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-            DbHandler.putString(context, "bearer", bearer);
-            DbHandler.putBoolean(context, "isLoggedIn", true);
-            Intent intent=new Intent(context,MainActivity.class);
-            intent.putExtra("frag","d");
-            intent.putExtra("action","intent");
+            final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCancelable(false);
 
-            context.startActivity(intent);
-            ((Activity) context).finishAffinity();
+            DbHandler.putString(context, "bearer", bearer);
+            DbHandler.putString(context, "user_type", user_type);
+            DbHandler.putBoolean(context, "isLoggedIn", true);
+
+            MemberInfoRequest memberInfoRequest = ServiceGenerator.createService(MemberInfoRequest.class, DbHandler.getString(context, "bearer", ""));
+            Call<MemberInfoPOJO> memberInfoPOJOCall = memberInfoRequest.call();
+            memberInfoPOJOCall.enqueue(new Callback<MemberInfoPOJO>() {
+                @Override
+                public void onResponse(Call<MemberInfoPOJO> call, Response<MemberInfoPOJO> response) {
+
+                    Log.e("res_code",String.valueOf(response.code()));
+                    if (response.code() == 200) {
+                        progressDialog.dismiss();
+                        Intent intent;
+                        if(user_type.equals("employee")) {
+                            intent= new Intent(context, MainActivity.class);
+                        }
+                        else{
+                            intent=new Intent(context, ManagerActivity.class);
+                        }
+                        DbHandler.putString(context, "member_info", new Gson().toJson(response.body().getData()));
+
+                        intent.putExtra("frag", "d");
+                        intent.putExtra("action", "intent");
+
+                        context.startActivity(intent);
+                        ((Activity) context).finishAffinity();
+
+                    } else if (response.code() == 403) {
+                        progressDialog.dismiss();
+
+                        Toast.makeText(context, "Not Authorized", Toast.LENGTH_LONG).show();
+                        DbHandler.unsetSession(context, "isforcedLoggedOut");
+                    } else {
+                        progressDialog.dismiss();
+                        new AlertDialog.Builder(context).setTitle("Error").setMessage("Unable to connect to server")
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).create().show();
+                    }
+                }
+
+                @Override
+                public void onFailure(final Call<MemberInfoPOJO> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Log.e("terror",t.getMessage());
+                    new AlertDialog.Builder(context).setTitle("error").setMessage("Unable to connect to server")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
+
+                }
+            });
 
         }
     }
@@ -115,23 +182,9 @@ public class DbHandler {
         if (context != null) {
             //FirebaseMessaging.getInstance().unsubscribeFromTopic(Config.TOPIC_GLOBAL);
             DbHandler.clearDb(context);
-            context.startActivity(new Intent(context, LoginActivity.class));
+            context.startActivity(new Intent(context, StartActivity.class));
             ((Activity) context).finishAffinity();
             Toast.makeText(context,"You have been logged out successfully",Toast.LENGTH_LONG).show();
         }
     }
-    /*public static void update_unsetSession(Context context, String type) {
-        if (context != null) {
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(Config.TOPIC_GLOBAL);
-            DbHandler.clearDb(context);
-            DbHandler.putBoolean(context, "update", true);
-            Bundle b = new Bundle();
-            b.putBoolean(type, true);
-            Intent i = new Intent(context, LoginActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.putExtras(b);
-            context.startActivity(i);
-            ((Activity) context).finishAffinity();
-        }
-    }*/
 }

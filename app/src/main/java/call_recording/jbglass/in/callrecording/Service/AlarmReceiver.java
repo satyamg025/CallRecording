@@ -55,52 +55,12 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent2) {
 
-        Log.e("comes","hello");
         TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
-//        Intent intent = new Intent(Intent.ACTION_CALL).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.setData(Uri.parse("tel:"+ DbHandler.getString(context, "mob_number","")));
-//        //intent.setData(Uri.parse("tel:9258697341"));
-//
-//        intent.putExtra("com.android.phone.force.slot", true);
-//        intent.putExtra("Cdma_Supp", true);
-//        if (item == 0) {//for sim1
-//            for (String s : simSlotName){
-//                intent.putExtra(s, 0); //0 or 1 according to sim.......
-//            }
-//
-//            if (phoneAccountHandleList != null && phoneAccountHandleList.size() > 0)
-//            {
-//                intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE",
-//                        phoneAccountHandleList.get(0));
-//            }
-//        } else {//for sim2
-//            for (String s : simSlotName) {
-//                intent.putExtra(s, 1); //0 or 1 according to sim.......
-//            }
-//            if (phoneAccountHandleList != null && phoneAccountHandleList.size() > 1){
-//                intent.putExtra("android.telecom.extra.PHONE_ACCOUNT_HANDLE",
-//                        phoneAccountHandleList.get(1));
-//            }
-//        }
-//
-//        PendingIntent pendingIntentMaybe = PendingIntent.getBroadcast(context, 12345, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        int notificationId = 0; // just use a counter in some util class...
-//        PendingIntent dismissIntent = PendingIntent.getDismissIntent(notificationId, context);
-
-        Log.e("mn2",String.valueOf(DbHandler.getString(context,"mob_number","")));
-        Log.e("mn3",String.valueOf(intent2.getExtras().getString("mob_no")));
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.putExtra("number",intent2.getExtras().getString("mob_no"));
         notificationIntent.putExtra("action","call");
@@ -125,7 +85,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setOnlyAlertOnce(true)
                 .setVibrate(pattern)
                 .setLights(Color.BLUE,500,500)
-                //.addAction(R.drawable.ic_call_black_24dp,"Call Now",pendingIntentMaybe)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
 

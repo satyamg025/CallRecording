@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    public static String API_BASE_URL = "http://139.59.83.5:8081/api/";
+    public static String API_BASE_URL = "https://www.bkarogyam.com/capi/";
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(60, TimeUnit.SECONDS);
 
@@ -41,14 +41,11 @@ public class ServiceGenerator {
     public static <S> S createService(Class<S> serviceClass, String username, String password) {
         if (username != null && password != null) {
             final String credentials = username + ":" + password;
-            //  final String basic ="Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
             httpClient.addInterceptor(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
                     Request original = chain.request();
-
-                   // Log.e("Authoriztion",String.valueOf(credentials));
 
                     Request.Builder requestBuilder = original.newBuilder()
                             .header("Authorization", credentials)

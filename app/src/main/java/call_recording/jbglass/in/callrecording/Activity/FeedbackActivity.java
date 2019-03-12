@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -61,7 +62,6 @@ import java.util.Date;
 import java.util.List;
 
 import call_recording.jbglass.in.callrecording.Config.DbHandler;
-import call_recording.jbglass.in.callrecording.Fragments.dialog_feedback;
 import call_recording.jbglass.in.callrecording.JSONBody.DispositionBody;
 import call_recording.jbglass.in.callrecording.JSONBody.IncomingBody;
 import call_recording.jbglass.in.callrecording.JSONBody.RemarkBody;
@@ -79,24 +79,13 @@ import call_recording.jbglass.in.callrecording.Requests.IncomingRequest;
 import call_recording.jbglass.in.callrecording.Requests.RemarkRequest;
 import call_recording.jbglass.in.callrecording.Requests.ReplicateCall;
 import call_recording.jbglass.in.callrecording.Requests.UploadRequest;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FeedbackActivity extends Activity {
 
-//    ViewPager viewPager;
-//
-//    LinearLayout dotsLayout;
-//    private TextView[] dots;
-//    ViewPagerAdapter mSectionsPagerAdapter;
-
     ProgressDialog progressDialog;
-    //int size=0;
     ListView radioGroup;
     List<DispositionDatumPOJO> dispositionDatumPOJOList=new ArrayList<DispositionDatumPOJO>();
     String call_id="";
@@ -122,82 +111,23 @@ public class FeedbackActivity extends Activity {
         Date today = new Date();
         date_st=formatter.format(today);
 
-        call_id=DbHandler.getString(this,"call_id","");
+        call_id=getIntent().getExtras().getString("call_id");
         next=(Button)findViewById(R.id.next);
         next.setVisibility(View.GONE);
         remark=(EditText)findViewById(R.id.remark);
         progressDialog=new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.setCancelable(false);
-        progressDialog.show();
+
         radioGroup=(ListView) findViewById(R.id.radio_group);
 
         if(DbHandler.contains(FeedbackActivity.this,"app"))
             DbHandler.remove(FeedbackActivity.this,"app");
 
-        DispositionsRequest dispositionsRequest= ServiceGenerator.createService(DispositionsRequest.class, DbHandler.getString(this,"bearer",""));
-        Call<DispositionPOJO> call=dispositionsRequest.call();
-        call.enqueue(new Callback<DispositionPOJO>() {
-            @Override
-            public void onResponse(Call<DispositionPOJO> call, Response<DispositionPOJO> response) {
-                progressDialog.dismiss();
-                if(response.code()==200){
-//                    radioGroup.removeAllViews();
-                    dispositionDatumPOJOList=response.body().getDispositions();
-                    if(response.body().getDispositions().size()>0) {
-                        String callls[]=new String[response.body().getDispositions().size()];
-                        for (int i = 0; i < response.body().getDispositions().size(); i++) {
-                            callls[i]=response.body().getDispositions().get(i).getName();
-//                                RadioButton rdbtn = new RadioButton(FeedbackActivity.this);
-//                                rdbtn.setId((ind * 2) + i);
-//                                //
-//                                // ind++;
-//                                rdbtn.setText(response.body().getDispositions().get(i).getName());
-//                                radioGroup.addView(rdbtn);
-                        }
-                        ArrayAdapter adapter = new ArrayAdapter<String>(FeedbackActivity.this,android.R.layout.simple_list_item_1
-                                ,callls);
-                        radioGroup.setAdapter(adapter);
-                    }
-
-                }
-                else if (response.code()==403){
-                    Toast.makeText(FeedbackActivity.this,"Not Authorized",Toast.LENGTH_LONG).show();
-                    DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
-                }
-                else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DispositionPOJO> call, Throwable t) {
-                progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
-            }
-        });
-
-//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//             parent_id=dispositionDatumPOJOList.get(i).getId();
-//             selected=i;
-//            }
-//        });
+        uploadOutgoingFiles();
 
         radioGroup.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(cnt==0) {
@@ -262,11 +192,6 @@ public class FeedbackActivity extends Activity {
 
                         PendingIntent broadcast = PendingIntent.getBroadcast(FeedbackActivity.this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-                        // min=1;
-                        Log.e("mn",String.valueOf(min*60));
-                        Log.e("mn1",String.valueOf(DbHandler.getString(FeedbackActivity.this,"mob_number","")));
-                        //min=1;
                         Calendar cal = Calendar.getInstance();
                         cal.add(Calendar.SECOND, min*60);
 
@@ -301,12 +226,10 @@ public class FeedbackActivity extends Activity {
                     }
                     else{
                         inflateRadioGroup();
-                        //ind++;
                     }
                 }
                 else{
                     submit_remark();
-                    //Toast.makeText(FeedbackActivity.this,remark.getText().toString(),Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -314,9 +237,60 @@ public class FeedbackActivity extends Activity {
 
     }
 
+    void FeedBackData(){
+        progressDialog.show();
+
+        DispositionsRequest dispositionsRequest= ServiceGenerator.createService(DispositionsRequest.class, DbHandler.getString(this,"bearer",""));
+        Call<DispositionPOJO> call=dispositionsRequest.call();
+        call.enqueue(new Callback<DispositionPOJO>() {
+            @Override
+            public void onResponse(Call<DispositionPOJO> call, Response<DispositionPOJO> response) {
+                progressDialog.dismiss();
+                if(response.code()==200){
+                    dispositionDatumPOJOList=response.body().getDispositions();
+                    if(response.body().getDispositions().size()>0) {
+                        radioGroup.setVisibility(View.VISIBLE);
+                        String callls[]=new String[response.body().getDispositions().size()];
+                        for (int i = 0; i < response.body().getDispositions().size(); i++) {
+                            callls[i]=response.body().getDispositions().get(i).getName();
+                        }
+                        ArrayAdapter adapter = new ArrayAdapter<String>(FeedbackActivity.this,android.R.layout.simple_list_item_1
+                                ,callls);
+                        radioGroup.setAdapter(adapter);
+                    }
+
+                }
+                else if (response.code()==403){
+                    Toast.makeText(FeedbackActivity.this,"Not Authorized",Toast.LENGTH_LONG).show();
+                    DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
+                }
+                else{
+                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    onBackPressed();
+                                }
+                            }).create().show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DispositionPOJO> call, Throwable t) {
+                progressDialog.dismiss();
+                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                onBackPressed();
+                            }
+                        }).create().show();
+            }
+        });
+    }
+
     void replicateCall(){
 
-        Log.e("date_string",date_st);
         progressDialog.show();
 
         ReplicateCallBody replicateCallBody=new ReplicateCallBody(call_id,date_st);
@@ -367,43 +341,23 @@ public class FeedbackActivity extends Activity {
 
     private void uploadFile(final String filePath, final String fileName,final String call_id) {
         class UF extends AsyncTask<String, String, String> {
-            InputStream inputStream;
-            private Dialog loadingDialog;
             String responseString="";
-
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                progressDialog = new ProgressDialog(FeedbackActivity.this);
-                progressDialog.setMessage("Loading...");
-                progressDialog.setCancelable(false);
-                // progressDialog.show();
             }
 
             @Override
             protected String doInBackground(String... params) {
 
-//                String mob=params[2];
-                InputStream is = null;
-//                SharedPreferences sf=getSharedPreferences("MyData", Context.MODE_PRIVATE);
-//
-//                String token=sf.getString("token","");
-
-//                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//                nameValuePairs.add(new BasicNameValuePair("token", token));
-//                nameValuePairs.add(new BasicNameValuePair("text", "test"));
-
-
                 String fp = params[0];
-                String fn = params[1];
                 try {
                     HttpPost httpPost;
 
                     HttpClient httpClient = new DefaultHttpClient();
                     httpPost = new HttpPost("http://139.59.83.5:8081/api/uploads");
                     httpPost.addHeader("Authorization",DbHandler.getString(FeedbackActivity.this,"bearer",""));
-                    //httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
                     File file = new File(fp);
 
@@ -437,7 +391,6 @@ public class FeedbackActivity extends Activity {
             @Override
             protected void onPostExecute(final String result) {
 
-                // progressDialog.dismiss();
                 Log.e("TAG", "Response from server: " + result);
 
                 super.onPostExecute(result);
@@ -446,8 +399,6 @@ public class FeedbackActivity extends Activity {
 
                 File fil=new File(filePath);
                 boolean bool = fil.delete();
-//
-//                Log.e("bool",String.valueOf(bool));
                 try {
                     JSONObject jsonObject=new JSONObject(result);
                     String filename=jsonObject.getString("filename");
@@ -481,7 +432,6 @@ public class FeedbackActivity extends Activity {
                 }
 
 
-
             }
         }
 
@@ -491,6 +441,146 @@ public class FeedbackActivity extends Activity {
         l.execute(filePath,fileName);
 
 
+    }
+
+    public void uploadOutgoingFiles(){
+
+        File dir=null;
+        String path = Environment.getExternalStorageDirectory().toString()+"/" + DbHandler.getString(FeedbackActivity.this,"curr_chosen_directory","").replaceAll("%20"," ");
+        dir = new File(path);
+
+        File[] files = dir.listFiles();
+
+
+        for (File file : files) {
+            if (file.getName().startsWith("BKOut_")) {
+                String call_id2=file.getName().split("_")[1];
+                String callid=call_id2.split(".amr")[0];
+                //if(callid.equals(call_id))
+                    nullFeedback(callid);
+
+                uploadFile(file.getAbsolutePath(),file.getName(),callid);
+
+            }
+
+        }
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        uploadIncomingFiles(true);
+    }
+
+    void nullFeedback(String callid){
+        final DispositionBody dispositionBody=new DispositionBody(null,callid);
+
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        Disposition2Request dispositionsRequest= ServiceGenerator.createService(Disposition2Request.class, DbHandler.getString(this,"bearer",""));
+        Call<DispositionPOJO> call=dispositionsRequest.call(dispositionBody);
+        call.enqueue(new Callback<DispositionPOJO>() {
+            @Override
+            public void onResponse(Call<DispositionPOJO> call, Response<DispositionPOJO> response) {
+                progressDialog.dismiss();
+                if(response.code()==200){
+                    Log.e("null","nullable");
+                    return;
+                }
+                else if (response.code()==403){
+                    Toast.makeText(FeedbackActivity.this,"Not Authorized",Toast.LENGTH_LONG).show();
+                    DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
+                }
+                else{
+                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    onBackPressed();
+                                }
+                            }).create().show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DispositionPOJO> call, Throwable t) {
+                progressDialog.dismiss();
+                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                onBackPressed();
+                            }
+                        }).create().show();
+            }
+        });
+    }
+
+    public void uploadIncomingFiles(boolean loadFeedbackData){
+        File dir=null;
+        String path = Environment.getExternalStorageDirectory().toString()+"/" + DbHandler.getString(FeedbackActivity.this,"curr_chosen_directory","").replaceAll("%20"," ");
+        dir = new File(path);
+
+        File[] files = dir.listFiles();
+
+        for (final File file : files) {
+            if (file.getName().startsWith("BKIn_")) {
+                progressDialog.show();
+                if(!file.getName().contains(call_id)) {
+                    String cal_nu2 = file.getName().split("_")[1];
+                    final String num = cal_nu2.split(".amr")[0];
+
+                    IncomingBody incomingBody = new IncomingBody(num, "I");
+                    IncomingRequest incomingRequest = ServiceGenerator.createService(IncomingRequest.class, DbHandler.getString(FeedbackActivity.this, "bearer", ""));
+                    Call<IncomingPOJO> call1 = incomingRequest.call(incomingBody);
+                    call1.enqueue(new Callback<IncomingPOJO>() {
+                        @Override
+                        public void onResponse(Call<IncomingPOJO> call, Response<IncomingPOJO> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200) {
+                                nullFeedback(response.body().getCall_id());
+                                uploadFile(file.getAbsolutePath(), file.getName(), response.body().getCall_id());
+                            } else if (response.code() == 403) {
+                                Toast.makeText(FeedbackActivity.this, "Not Authorized", Toast.LENGTH_LONG).show();
+                                DbHandler.unsetSession(FeedbackActivity.this, "isforcedLoggedOut");
+                            } else {
+                                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                onBackPressed();
+                                            }
+                                        }).create().show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<IncomingPOJO> call, Throwable t) {
+                            progressDialog.dismiss();
+                            new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            onBackPressed();
+                                        }
+                                    }).create().show();
+                        }
+                    });
+                }
+                else {
+                    uploadFile(file.getAbsolutePath(), file.getName(), call_id);
+
+                }
+
+            }
+
+        }
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        if(loadFeedbackData)
+            FeedBackData();
     }
 
     void submit_remark(){
@@ -509,105 +599,7 @@ public class FeedbackActivity extends Activity {
             public void onResponse(Call<RemarkPOJO> call, Response<RemarkPOJO> response) {
                 progressDialog.dismiss();
                 if(response.code()==200){
-                    File dir=null;
-                    if (!Build.BRAND.equalsIgnoreCase("xiaomi")) {
-                        dir = Environment.getExternalStorageDirectory();
-
-                    }
-                    else{
-                        String path = Environment.getExternalStorageDirectory().toString() + "/MIUI/sound_recorder/call_rec";
-                        dir = new File(path);
-
-                    }
-                    File[] files = dir.listFiles();
-
-
-                    for (File file : files) {
-                        if (file.getName().startsWith("BKOut_")) {
-                            Uri uri=Uri.fromFile(new File(file.getAbsolutePath()));
-                            Log.e("file_name",file.getAbsolutePath());
-                            Log.e("file_uri",String.valueOf(uri));
-
-                            String call_id2=file.getName().split("_")[1];
-                            Log.e("call_od",call_id2);
-                            Log.e("call_od2",String.valueOf(call_id2.split(".amr")));
-                            String call_id=call_id2.split(".amr")[0];
-
-
-
-                            uploadFile(file.getAbsolutePath(),file.getName(),call_id);
-                        }
-
-                    }
-                    if(progressDialog.isShowing()){
-                        progressDialog.dismiss();
-                    }
-
-                    for (final File file : files) {
-                        if (file.getName().startsWith("BKIn_")) {
-                            Uri uri=Uri.fromFile(new File(file.getAbsolutePath()));
-                            Log.e("file_name",file.getAbsolutePath());
-                            Log.e("file_uri",String.valueOf(uri));
-
-                            progressDialog.show();
-                            String cal_nu2=file.getName().split("_")[1];
-                            String num=cal_nu2.split(".amr")[0];
-                            Log.e("num",num);
-
-                            IncomingBody incomingBody=new IncomingBody(num,"I");
-                            IncomingRequest incomingRequest=ServiceGenerator.createService(IncomingRequest.class,DbHandler.getString(FeedbackActivity.this,"bearer",""));
-                            Call<IncomingPOJO> call1=incomingRequest.call(incomingBody);
-                            call1.enqueue(new Callback<IncomingPOJO>() {
-                                @Override
-                                public void onResponse(Call<IncomingPOJO> call, Response<IncomingPOJO> response) {
-                                    progressDialog.dismiss();
-                                    if(response.code()==200){
-                                        Gson gson=new Gson();
-                                        Log.e("get_data",gson.toJson(response.body()));
-                                        uploadFile(file.getAbsolutePath(),file.getName(),response.body().getCall_id());
-                                    }
-                                    else if (response.code()==403){
-                                        Toast.makeText(FeedbackActivity.this,"Not Authorized",Toast.LENGTH_LONG).show();
-                                        DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
-                                    }
-                                    else {
-                                        new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        onBackPressed();
-                                                    }
-                                                }).create().show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<IncomingPOJO> call, Throwable t) {
-                                    progressDialog.dismiss();
-                                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    onBackPressed();
-                                                }
-                                            }).create().show();
-                                }
-                            });
-
-                        }
-
-                    }
-                    if(progressDialog.isShowing()){
-                        progressDialog.dismiss();
-                    }
-
-                    //Toast.makeText(FeedbackActivity.this,response.body().getMsg(),Toast.LENGTH_LONG).show();
-//                    Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-//                    homeIntent.addCategory( Intent.CATEGORY_HOME );
-//                    homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(homeIntent);
                     startActivity(new Intent(FeedbackActivity.this,MainActivity.class).putExtra("action","intent"));
-
                     finish();
                 }
                 else if (response.code()==403){
@@ -656,10 +648,7 @@ public class FeedbackActivity extends Activity {
                 progressDialog.dismiss();
                 if(response.code()==200){
 
-                    // radioGroup.removeAllViews();
                     dispositionDatumPOJOList=response.body().getDispositions();
-                    // for (int row = 0; row < 1; row++) {
-                    //    radioGroup.setOrientation(LinearLayout.HORIZONTAL);
                     if (dispositionDatumPOJOList != null) {
                         if (response.body().getDispositions().size() > 0) {
                             callls = new String[response.body().getDispositions().size()];

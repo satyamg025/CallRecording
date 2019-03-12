@@ -37,32 +37,12 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText username, password;
     TextInputLayout u_til, p_til;
-    AppCompatButton submit, register;
-    Gson gson = new Gson();
-    private boolean doubleBackToExitPressedOnce = false;
+    AppCompatButton submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//
-//        Intent notificationIntent = new Intent("android.media.action.DISPLAY_NOTIFICATION");
-//        notificationIntent.addCategory("android.intent.category.DEFAULT");
-//
-//        PendingIntent broadcast = PendingIntent.getBroadcast(this, 100, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        Calendar cal = Calendar.getInstance();
-//        cal.add(Calendar.SECOND, 15);
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), broadcast);
-
-        getSupportActionBar().setTitle("Login");
-
-        if(DbHandler.getBoolean(this,"isLoggedIn",false)){
-            startActivity(new Intent(this,MainActivity.class).putExtra("action","intent"));
-            finish();
-        }
 
         username = (EditText) findViewById(R.id.input_roll);
         password = (EditText) findViewById(R.id.input_password);
@@ -83,11 +63,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (!username.getText().toString().equals("") && !password.getText().toString().equals("")) {
 
-                    Log.e("username",username.getText().toString()+" "+password.getText().toString());
                     LoginBody loginBody=new LoginBody(username.getText().toString(),password.getText().toString());
 
-                    //Gson gson=new Gson();
-                    Log.e("str_test",gson.toJson(loginBody));
                     final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                     progressDialog.setMessage("Loading...");
                     progressDialog.setCancelable(false);
@@ -99,8 +76,6 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {
                             progressDialog.dismiss();
-                            Log.e("error", String.valueOf(response.code()));
-                            Log.e("data", String.valueOf(gson.toJson(response.body())));
                             if (response.code() == 200) {
                                 if (!response.body().getSuccess()) {
                                     new AlertDialog.Builder(LoginActivity.this).setTitle("Login failed").setMessage("Invalid login credentials").setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -111,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }).show();
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_LONG).show();
-                                    DbHandler.setSession(LoginActivity.this, response.body().getToken());
+                                    DbHandler.setSession(LoginActivity.this, response.body().getToken(),getIntent().getExtras().getString("user_type"));
                                 }
                             } else {
                                 Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
@@ -121,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<LoginPOJO> call, Throwable t) {
-                            Log.e("error123",t.toString());
                             progressDialog.dismiss();
                             Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
 

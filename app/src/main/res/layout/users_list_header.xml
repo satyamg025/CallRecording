@@ -1,42 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:weightSum="1"
     android:layout_height="wrap_content">
-
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="30dp"
-        app:srcCompat="@drawable/ic_more_vert_black_24dp"
-        android:layout_gravity="center"
-        android:id="@+id/menu"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_margin="10dp"
-        android:layout_alignRight="@id/remark"
+        android:weightSum="1"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center_vertical"
-        android:text="Shivam Chaurasia"
-        android:id="@+id/title"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:textSize="14sp"
-        android:textStyle="italic"
-        android:gravity="center_vertical"
-        android:text="Shivam Chaurasia"
-        android:id="@+id/name"/>
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/circular_border">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textStyle="bold"
+                android:textSize="27sp"
+                android:text="S"
+                android:textColor="@color/whitegrey"
+                android:id="@+id/call_img" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="0.8"
+            android:layout_margin="10dp"
+            android:id="@+id/ll"
+            android:layout_alignRight="@id/remark"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:text="Shivam Chaurasia"
+            android:id="@+id/title"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:textSize="14sp"
+            android:gravity="center_vertical"
+            android:fontFamily="sans-serif-medium"
+            android:text="Shivam Chaurasia"
+            android:id="@+id/name"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp"
+            android:layout_gravity="center"
+            android:id="@+id/menu" />
     </LinearLayout>
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/not_selected"/>
+
+</LinearLayout>

@@ -75,6 +75,8 @@ public class dialog_select_sim extends DialogFragment {
 
         sim1=(RadioButton)parentView.findViewById(R.id.sim1);
         sim2=(RadioButton)parentView.findViewById(R.id.sim2);
+
+        sim1.setChecked(true);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -103,23 +105,15 @@ public class dialog_select_sim extends DialogFragment {
         DbHandler.putString(getActivity(),"title",getArguments().getString("title"));
         TelecomManager telecomManager = (TelecomManager) getActivity().getSystemService(Context.TELECOM_SERVICE);
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         phoneAccountHandleList = telecomManager.getCallCapablePhoneAccounts();
-        //Intent intent = new Intent(Intent.ACTION_CALL).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         DbHandler.putString(getActivity(),"app","true");
         DbHandler.putString(getActivity(),"mob_number",getArguments().getString("number"));
 
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:"+getArguments().getString("number")));
-       // intent.setData(Uri.parse("tel:9258697341"));
 
         intent.putExtra("com.android.phone.force.slot", true);
         intent.putExtra("Cdma_Supp", true);
@@ -145,31 +139,6 @@ public class dialog_select_sim extends DialogFragment {
         startActivity(intent);
         getActivity().finish();
 
-//        Intent callIntent = new Intent(Intent.ACTION_CALL)
-//                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        callIntent.setData(Uri.parse("tel:8266063906"));
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#request
-//            // Permissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        callIntent.putExtra("com.android.phone.force.slot", true);
-//        callIntent.putExtra("Cdma_Supp", true);
-//        callIntent.putExtra("simSlot", 0);
-//        callIntent.putExtra("com.android.phone.extra.slot", 0);
-//        context.startActivity(callIntent);
-
-//        try {
-//            startRecording();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
 }

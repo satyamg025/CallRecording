@@ -20,22 +20,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="25dp"
         android:layout_height="wrap_content">
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Option1"/>-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColorHighlight="@color/colorAccent"-->
-            <!--android:text="Option2"/>-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Option3"/>-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Option4"/>-->
+
     </RadioGroup>
 </LinearLayout>
