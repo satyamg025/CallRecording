@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class CallHistoryFragment extends Fragment {
                     historyDataPOJOCall.enqueue(new Callback<HistoryDataPOJO>() {
                         @Override
                         public void onResponse(Call<HistoryDataPOJO> call, Response<HistoryDataPOJO> response) {
-
+                            Log.e("Res_code",String.valueOf(response.code()));
                             if (response.code() == 200) {
                                 progressDialog.dismiss();
                                 StringBuilder msg= new StringBuilder("<ul style=\"list-style-type:disc\">");
@@ -108,6 +109,7 @@ public class CallHistoryFragment extends Fragment {
                         @Override
                         public void onFailure(Call<HistoryDataPOJO> call, Throwable t) {
                             progressDialog.dismiss();
+                            Log.e("error_fail",t.getMessage());
                             new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override

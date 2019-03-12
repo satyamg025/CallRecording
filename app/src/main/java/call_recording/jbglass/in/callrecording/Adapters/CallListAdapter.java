@@ -85,12 +85,12 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.view_h
             ll=(LinearLayout)itemView.findViewById(R.id.ll);
 
             menu = (ImageView) itemView.findViewById(R.id.menu);
-            menu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    context.startActivity(new Intent(context, FeedbackActivity.class));
-                }
-            });
+//            menu.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    context.startActivity(new Intent(context, FeedbackActivity.class));
+//                }
+//            });
 
             call_img.setOnClickListener(new View.OnClickListener() {
                 @Override

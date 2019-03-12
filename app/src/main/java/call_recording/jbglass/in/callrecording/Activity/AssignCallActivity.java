@@ -44,13 +44,14 @@ public class AssignCallActivity extends AppCompatActivity {
     String date_st="";
     Calendar myCalendar = Calendar.getInstance();
     SimpleDateFormat formatter = new SimpleDateFormat("dd MMM YYYY");
-    SimpleDateFormat formatter2 = new SimpleDateFormat("YYYY-mm-dd");
+    SimpleDateFormat formatter2 = new SimpleDateFormat("YYYY-MM-dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_call);
 
+        formatter=formatter2;
         name=(EditText)findViewById(R.id.name);
         date=(TextView)findViewById(R.id.call_date);
         title=(EditText)findViewById(R.id.title);
@@ -64,6 +65,7 @@ public class AssignCallActivity extends AppCompatActivity {
 
         Date today = new Date();
         date_st=formatter.format(today);
+        date.setText(date_st);
 
 
         final DatePickerDialog.OnDateSetListener dates = new DatePickerDialog.OnDateSetListener() {
@@ -139,7 +141,7 @@ public class AssignCallActivity extends AppCompatActivity {
 
                     DataPOJO memberInfoPOJO=new Gson().fromJson(DbHandler.getString(AssignCallActivity.this,"member_info","{}"),DataPOJO.class);
 
-                    AssignCallBody assignCallBody=new AssignCallBody(name.getText().toString(),formattedDate,memberInfoPOJO.getId(),title.getText().toString(),details.getText().toString(),mobile.getText().toString(),"Y");
+                    AssignCallBody assignCallBody=new AssignCallBody(name.getText().toString(),date_st,memberInfoPOJO.getId(),title.getText().toString(),details.getText().toString(),mobile.getText().toString(),"Y");
 
                     Log.e("assign_body",new Gson().toJson(assignCallBody));
                     AssignCallRequest assignCallRequests= ServiceGenerator.createService(AssignCallRequest.class, DbHandler.getString(AssignCallActivity.this, "bearer", ""));

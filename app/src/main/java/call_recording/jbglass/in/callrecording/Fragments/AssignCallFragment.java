@@ -59,7 +59,7 @@ public class AssignCallFragment extends Fragment {
     String date_st="";
     Calendar myCalendar = Calendar.getInstance();
     SimpleDateFormat formatter = new SimpleDateFormat("dd MMM YYYY");
-    SimpleDateFormat formatter2 = new SimpleDateFormat("YYYY-mm-dd");
+    SimpleDateFormat formatter2 = new SimpleDateFormat("YYYY-MM-dd");
     Spinner employee;
     List<String> employee_list = new ArrayList<String>();
     List<String> emp_id_list = new ArrayList<String>();
@@ -76,6 +76,7 @@ public class AssignCallFragment extends Fragment {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_assign_call, container, false);
 
+        formatter=formatter2;
         name=(EditText)view.findViewById(R.id.name);
         date=(TextView)view.findViewById(R.id.call_date);
         title=(EditText)view.findViewById(R.id.title);
@@ -86,6 +87,7 @@ public class AssignCallFragment extends Fragment {
 
         Date today = new Date();
         date_st=formatter.format(today);
+        date.setText(date_st);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
@@ -231,7 +233,7 @@ public class AssignCallFragment extends Fragment {
                     progressDialog.setCancelable(false);
                     progressDialog.show();
 
-                    AssignCallBody assignCallBody=new AssignCallBody(name.getText().toString(),formattedDate,emp_id_list.get(selected_item),title.getText().toString(),details.getText().toString(),mobile.getText().toString(),"Y");
+                    AssignCallBody assignCallBody=new AssignCallBody(name.getText().toString(),date_st,emp_id_list.get(selected_item),title.getText().toString(),details.getText().toString(),mobile.getText().toString(),"Y");
 
                     AssignCallRequest assignCallRequests= ServiceGenerator.createService(AssignCallRequest.class, DbHandler.getString(getContext(), "bearer", ""));
                     Call<AssignCallPOJO> call=assignCallRequests.call(assignCallBody);
@@ -246,12 +248,10 @@ public class AssignCallFragment extends Fragment {
                                 mobile.setText("");
                                 Toast.makeText(getContext(), "Call Successfully assigned", Toast.LENGTH_LONG).show();
                             } else if (response.code() == 403) {
-                                progressDialog.dismiss();
 
                                 Toast.makeText(getContext(), "Not Authorized", Toast.LENGTH_LONG).show();
                                 DbHandler.unsetSession(getContext(), "isforcedLoggedOut");
                             } else {
-                                progressDialog.dismiss();
                                 new AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                             @Override

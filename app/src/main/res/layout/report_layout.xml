@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:cardBackgroundColor="@color/colorAccent"
+        app:cardCornerRadius="5dp"
+        android:elevation="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_margin="15dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="0.9"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Completed"
+                    android:textStyle="bold"
+                    android:id="@+id/complete_status"
+                    android:textColor="@color/whitegrey"
+                    android:textSize="22sp"
+                    android:layout_marginTop="5dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Incoming Call (9258697341)"
+                    android:textSize="18sp"
+                    android:id="@+id/title"
+                    android:textColor="@color/whitegrey"
+                    android:layout_marginTop="5dp"
+                    android:textStyle="italic"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/not_selected"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12/03/2019 12:36:29"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:id="@+id/time" />
+
+            </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp"
+                android:layout_gravity="center"
+                android:id="@+id/menu" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

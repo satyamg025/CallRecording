@@ -17,8 +17,8 @@
         android:title="Call History" />
 
     <item
-        android:id="@+id/profile"
-        android:icon="@drawable/ic_account_circle_black_24dp"
-        android:title="Profile" />
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="Logout" />
 
 </menu>

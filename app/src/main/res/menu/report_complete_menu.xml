@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="Description"
+        android:id="@+id/description"/>
+
+    <item
+        android:title="Feedback"
+        android:id="@+id/feedback"/>
+
+    <item
+        android:title="Remark"
+        android:id="@+id/remark"/>
+
+    <item
+        android:title="Recording"
+        android:id="@+id/recording"/>
+
+</menu>

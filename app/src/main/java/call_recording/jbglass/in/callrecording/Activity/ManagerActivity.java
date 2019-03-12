@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import call_recording.jbglass.in.callrecording.Config.DbHandler;
 import call_recording.jbglass.in.callrecording.Fragments.AssignCallFragment;
 import call_recording.jbglass.in.callrecording.Fragments.CallHistoryFragment;
 import call_recording.jbglass.in.callrecording.Fragments.ProfileFragment;
@@ -40,10 +42,8 @@ public class ManagerActivity extends AppCompatActivity {
                     toolbar.setTitle("Call History");
                     loadFragment(fragment);
                     return true;
-                case R.id.profile:
-                    fragment=new ProfileFragment();
-                    toolbar.setTitle("Profile");
-                    loadFragment(fragment);
+                case R.id.logout:
+                    DbHandler.unsetSession(ManagerActivity.this,"logout");
                     return true;
                 default:
                     fragment=new AssignCallFragment();
