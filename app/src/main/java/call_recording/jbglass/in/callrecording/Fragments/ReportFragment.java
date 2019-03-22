@@ -32,12 +32,15 @@ import java.util.List;
 
 import call_recording.jbglass.in.callrecording.Activity.ReportActivity;
 import call_recording.jbglass.in.callrecording.Config.DbHandler;
+import call_recording.jbglass.in.callrecording.JSONBody.EmployeeBody;
 import call_recording.jbglass.in.callrecording.JSONBody.ReportBody;
+import call_recording.jbglass.in.callrecording.Models.DataPOJO;
 import call_recording.jbglass.in.callrecording.Models.EmployeeDataPOJO;
 import call_recording.jbglass.in.callrecording.Models.EmployeeResponsePOJO;
 import call_recording.jbglass.in.callrecording.Models.ReportResponsePOJO;
 import call_recording.jbglass.in.callrecording.Networking.ServiceGenerator;
 import call_recording.jbglass.in.callrecording.R;
+import call_recording.jbglass.in.callrecording.Requests.EmployeeGETRequest;
 import call_recording.jbglass.in.callrecording.Requests.EmployeeRequest;
 import call_recording.jbglass.in.callrecording.Requests.ReportRequest;
 import retrofit2.Call;
@@ -87,8 +90,18 @@ public class ReportFragment extends Fragment {
 
         progressDialog.show();
 
-        EmployeeRequest employeeRequest= ServiceGenerator.createService(EmployeeRequest.class, DbHandler.getString(getContext(), "bearer", ""));
-        Call<EmployeeResponsePOJO> employeeResponsePOJOCall=employeeRequest.call();
+        Call<EmployeeResponsePOJO> employeeResponsePOJOCall=null;
+        if(DbHandler.getString(getContext(),"user_type","").equals("manager")){
+            EmployeeRequest employeeRequest;
+            DataPOJO memberInfoPOJO=new Gson().fromJson(DbHandler.getString(getContext(),"member_info","{}"),DataPOJO.class);
+            employeeRequest=ServiceGenerator.createService(EmployeeRequest.class,DbHandler.getString(getContext(), "bearer", ""));
+            employeeResponsePOJOCall=employeeRequest.call(new EmployeeBody(String.valueOf(memberInfoPOJO.getEmpId())));
+        }
+        else if(DbHandler.getString(getContext(),"user_type","").equals("admin")){
+            EmployeeGETRequest employeeRequest;
+            employeeRequest=ServiceGenerator.createService(EmployeeGETRequest.class,DbHandler.getString(getContext(), "bearer", ""));
+            employeeResponsePOJOCall=employeeRequest.call();
+        }
         employeeResponsePOJOCall.enqueue(new Callback<EmployeeResponsePOJO>() {
             @Override
             public void onResponse(Call<EmployeeResponsePOJO> call, Response<EmployeeResponsePOJO> response) {

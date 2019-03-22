@@ -11,7 +11,7 @@ import call_recording.jbglass.in.callrecording.R;
 
 public class StartActivity extends AppCompatActivity {
 
-    Button employee,manager;
+    Button employee,manager,admin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,14 +20,19 @@ public class StartActivity extends AppCompatActivity {
 
         employee=(Button)findViewById(R.id.employee);
         manager=(Button)findViewById(R.id.manager);
+        admin=(Button)findViewById(R.id.admin);
 
         if(DbHandler.getBoolean(this,"isLoggedIn",false)){
             if(DbHandler.getString(this,"user_type","").equals("employee")) {
                 startActivity(new Intent(this, MainActivity.class).putExtra("action", "intent"));
                 finish();
             }
-            else{
+            else if(DbHandler.getString(this,"user_type","").equals("manager")){
                 startActivity(new Intent(this, ManagerActivity.class).putExtra("action", "intent"));
+                finish();
+            }
+            else if(DbHandler.getString(this,"user_type","").equals("admin")){
+                startActivity(new Intent(this, AdminActivity.class).putExtra("action", "intent"));
                 finish();
             }
         }
@@ -46,6 +51,15 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(StartActivity.this,LoginActivity.class);
                 intent.putExtra("user_type","manager");
+                startActivity(intent);
+            }
+        });
+
+        admin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(StartActivity.this,LoginActivity.class);
+                intent.putExtra("user_type","admin");
                 startActivity(intent);
             }
         });

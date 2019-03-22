@@ -86,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }).show();
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Successfully logged in", Toast.LENGTH_LONG).show();
+                                    Log.e("user_type",getIntent().getExtras().getString("user_type"));
                                     DbHandler.setSession(LoginActivity.this, response.body().getToken(),getIntent().getExtras().getString("user_type"));
                                 }
                             } else {

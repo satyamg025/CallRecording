@@ -70,6 +70,8 @@ public class CallReceiver extends PhoneCallReceiver {
             for (File file : files) {
                 if (file.getName().toLowerCase().contains(number)) {
                     File f2 = new File(dir2, fname);
+                    Log.e("rename","req_ok");
+
                     file.renameTo(f2);
                     break;
                 }
@@ -106,6 +108,7 @@ public class CallReceiver extends PhoneCallReceiver {
             }
         }
 
+        Log.e("rename","req_enter");
         IncomingBody incomingBody=new IncomingBody(number,"I");
         IncomingRequest incomingRequest= ServiceGenerator.createService(IncomingRequest.class,DbHandler.getString(ctx,"bearer",""));
         Call<IncomingPOJO> call1=incomingRequest.call(incomingBody);
@@ -114,14 +117,18 @@ public class CallReceiver extends PhoneCallReceiver {
             @Override
             public void onResponse(Call<IncomingPOJO> call, Response<IncomingPOJO> response) {
                 if(response.code()==200){
+
                     String new_fname =  "BKIn_" + response.body().getCall_id() +"_"+time+ ".amr";
-                    File f2 = new File(fname);
-                    File f3 = new File(finalPath,new_fname);
+                    File f2 = new File(dir2,fname);
+                    File f3 = new File(dir2,new_fname);
                     f2.renameTo(f3);
+
+                    Log.e("rename",new_fname);
 
                     Intent intent = new Intent(ctx, FeedbackActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("call_id",response.body().getCall_id());
+                    intent.putExtra("fname",new_fname);
                     ctx.startActivity(intent);
                 }
                 else if (response.code()==403){
@@ -129,25 +136,16 @@ public class CallReceiver extends PhoneCallReceiver {
                     DbHandler.unsetSession(ctx,"isforcedLoggedOut");
                 }
                 else {
-                    new AlertDialog.Builder(ctx).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).create().show();
+                    Toast.makeText(ctx, "Unable to connect to server", Toast.LENGTH_LONG).show();
+
                 }
             }
 
             @Override
             public void onFailure(Call<IncomingPOJO> call, Throwable t) {
-                new AlertDialog.Builder(ctx).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        }).create().show();
+                Log.e("error",t.getMessage());
+                Toast.makeText(ctx, "Unable to connect to server", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -189,6 +187,7 @@ public class CallReceiver extends PhoneCallReceiver {
                     Intent intent = new Intent(ctx, FeedbackActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("call_id",DbHandler.getString(ctx,"call_id",""));
+                    intent.putExtra("fname",fname);
                     ctx.startActivity(intent);
                 }
             }

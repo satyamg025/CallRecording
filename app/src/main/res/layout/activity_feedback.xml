@@ -1,80 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:padding="15dp"
     android:layout_height="wrap_content">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:text="BK Arogyam"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:fontFamily="sans-serif-condensed-light"
-        android:shadowColor="@color/black"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:text="Feedback"
-        android:fontFamily="monospace"
-        android:textSize="20sp"
-        android:shadowColor="@color/colorPrimary"
-        android:id="@+id/ques"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:id="@+id/rl"
-        android:layout_height="wrap_content">
-
-        <ListView
-            android:layout_width="match_parent"
-            android:id="@+id/radio_group"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="30dp"
-            android:visibility="gone"
-            android:layout_marginRight="25dp"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minLines="5"
-            android:id="@+id/remark"
-            android:hint="Write your remark"
-            android:gravity="left"
-            android:visibility="gone"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/box"/>
-
-    </RelativeLayout>
-
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:gravity="right"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl">
-        <Button
-            android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit"
-            android:padding="5dp"
-            android:textColor="@color/whitegrey"
-            android:background="@drawable/button_border"
-            android:id="@+id/next"/>
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:text="BK Arogyam"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed-light"
+            android:shadowColor="@color/black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:text="Feedback"
+            android:fontFamily="monospace"
+            android:textSize="20sp"
+            android:shadowColor="@color/colorPrimary"
+            android:id="@+id/ques"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:id="@+id/rl"
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:id="@+id/radio_group"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="30dp"
+                android:visibility="gone"
+                android:layout_marginRight="25dp"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="5"
+                android:id="@+id/remark"
+                android:hint="Write your remark"
+                android:gravity="left"
+                android:visibility="gone"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:background="@drawable/box"/>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Submit"
+                android:padding="5dp"
+                android:textColor="@color/whitegrey"
+                android:background="@drawable/button_border"
+                android:id="@+id/next"/>
+        </LinearLayout>
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

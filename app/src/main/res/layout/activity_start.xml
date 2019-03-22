@@ -1,37 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".Activity.StartActivity">
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/bklogo"/>
-    <Button
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_border"
-        android:text="Login as Employee"
-        android:padding="15dp"
-        android:id="@+id/employee"
-        android:textColor="@color/whitegrey"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="or"
-        android:layout_margin="10dp"/>
-    <Button
+        android:text="Welcome to BKArogyam"
+        android:textSize="32sp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_border"
-        android:text="Login as Manager"
-        android:padding="15dp"
-        android:id="@+id/manager"
-        android:textColor="@color/whitegrey"/>
+        android:text="Login as"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_margin="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_border"
+            android:text="Admin"
+            android:padding="15dp"
+            android:id="@+id/admin"
+            android:textColor="@color/whitegrey"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_border"
+            android:text="Employee"
+            android:padding="15dp"
+            android:id="@+id/employee"
+            android:textColor="@color/whitegrey"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_border"
+            android:text="Manager"
+            android:padding="15dp"
+            android:id="@+id/manager"
+            android:textColor="@color/whitegrey"/>
+
+    </LinearLayout>
 </LinearLayout>

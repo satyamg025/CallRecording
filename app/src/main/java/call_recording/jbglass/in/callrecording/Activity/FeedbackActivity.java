@@ -88,7 +88,7 @@ public class FeedbackActivity extends Activity {
     ProgressDialog progressDialog;
     ListView radioGroup;
     List<DispositionDatumPOJO> dispositionDatumPOJOList=new ArrayList<DispositionDatumPOJO>();
-    String call_id="";
+    String call_id="",fname="";
     Button next;
     String parent_id="";
     EditText remark;
@@ -111,7 +111,9 @@ public class FeedbackActivity extends Activity {
         Date today = new Date();
         date_st=formatter.format(today);
 
-        call_id=getIntent().getExtras().getString("call_id");
+        call_id=getIntent().getExtras().getString("call_id","");
+        fname=getIntent().getExtras().getString("fname","");
+
         next=(Button)findViewById(R.id.next);
         next.setVisibility(View.GONE);
         remark=(EditText)findViewById(R.id.remark);
@@ -456,7 +458,7 @@ public class FeedbackActivity extends Activity {
             if (file.getName().startsWith("BKOut_")) {
                 String call_id2=file.getName().split("_")[1];
                 String callid=call_id2.split(".amr")[0];
-                //if(callid.equals(call_id))
+                if(!file.getName().equals(fname))
                     nullFeedback(callid);
 
                 uploadFile(file.getAbsolutePath(),file.getName(),callid);
@@ -527,7 +529,10 @@ public class FeedbackActivity extends Activity {
         for (final File file : files) {
             if (file.getName().startsWith("BKIn_")) {
                 progressDialog.show();
-                if(!file.getName().contains(call_id)) {
+                Log.e("fname1",file.getName());
+                Log.e("fname2",fname);
+
+                if(!file.getName().equals(fname)) {
                     String cal_nu2 = file.getName().split("_")[1];
                     final String num = cal_nu2.split(".amr")[0];
 
@@ -569,6 +574,7 @@ public class FeedbackActivity extends Activity {
                     });
                 }
                 else {
+                    Log.e("driect_upload","upload");
                     uploadFile(file.getAbsolutePath(), file.getName(), call_id);
 
                 }

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import call_recording.jbglass.in.callrecording.Activity.AdminActivity;
 import call_recording.jbglass.in.callrecording.Activity.LoginActivity;
 import call_recording.jbglass.in.callrecording.Activity.MainActivity;
 import call_recording.jbglass.in.callrecording.Activity.ManagerActivity;
@@ -125,24 +126,30 @@ public class DbHandler {
                 @Override
                 public void onResponse(Call<MemberInfoPOJO> call, Response<MemberInfoPOJO> response) {
 
-                    Log.e("res_code",String.valueOf(response.code()));
                     if (response.code() == 200) {
                         progressDialog.dismiss();
                         Intent intent;
-                        if(user_type.equals("employee")) {
-                            intent= new Intent(context, MainActivity.class);
-                        }
-                        else{
-                            intent=new Intent(context, ManagerActivity.class);
-                        }
-                        DbHandler.putString(context, "member_info", new Gson().toJson(response.body().getData()));
 
-                        intent.putExtra("frag", "d");
-                        intent.putExtra("action", "intent");
+//                        if(!user_type.equals(response.body().getData().getEmpType())){
+//                            Toast.makeText(context, "Not Authorized", Toast.LENGTH_LONG).show();
+//                            DbHandler.unsetSession(context, "isforcedLoggedOut");
+//                        }
+                        //else {
+                            if (user_type.equals("employee")) {
+                                intent = new Intent(context, MainActivity.class);
+                            } else if (user_type.equals("manager")) {
+                                intent = new Intent(context, ManagerActivity.class);
+                            } else {
+                                intent = new Intent(context, AdminActivity.class);
+                            }
+                            DbHandler.putString(context, "member_info", new Gson().toJson(response.body().getData()));
 
-                        context.startActivity(intent);
-                        ((Activity) context).finishAffinity();
+                            intent.putExtra("frag", "d");
+                            intent.putExtra("action", "intent");
 
+                            context.startActivity(intent);
+                            ((Activity) context).finishAffinity();
+                       // }
                     } else if (response.code() == 403) {
                         progressDialog.dismiss();
 
@@ -180,7 +187,6 @@ public class DbHandler {
 
     public static void unsetSession(Context context, String type) {
         if (context != null) {
-            //FirebaseMessaging.getInstance().unsubscribeFromTopic(Config.TOPIC_GLOBAL);
             DbHandler.clearDb(context);
             context.startActivity(new Intent(context, StartActivity.class));
             ((Activity) context).finishAffinity();

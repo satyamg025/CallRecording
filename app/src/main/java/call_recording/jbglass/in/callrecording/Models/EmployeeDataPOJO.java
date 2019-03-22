@@ -36,5 +36,5 @@ public class EmployeeDataPOJO {
 
     public void setEmpId(Integer empId) {
         this.empId = empId;
-   }
+    }
 }
