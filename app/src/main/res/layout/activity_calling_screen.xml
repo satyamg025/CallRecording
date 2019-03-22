@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:background="@color/black"
     android:layout_height="match_parent"
-    tools:context="call_recording.jbglass.in.callrecording.Activity.CallingScreen">
+    tools:context="call_recording.bkarogyam.com.management.Activity.CallingScreen">
 
     <Button
         android:layout_width="150dp"
