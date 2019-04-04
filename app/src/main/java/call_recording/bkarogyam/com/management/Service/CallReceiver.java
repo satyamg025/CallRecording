@@ -46,7 +46,7 @@ public class CallReceiver extends PhoneCallReceiver {
     protected void onIncomingCallEnded(final Context ctx, String number, Date start, Date end) {
         final String time=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
         number=number.replace("+91","");
-        final String fname = "BKIn_" + number +"_"+time+ ".amr";
+        final String fname = "BKInNum_" + number +"_"+time+ ".amr";
         String path = Environment.getExternalStorageDirectory().toString() + "/" + DbHandler.getString(ctx, "curr_chosen_directory", "");
         final File dir2 = new File(path);
 

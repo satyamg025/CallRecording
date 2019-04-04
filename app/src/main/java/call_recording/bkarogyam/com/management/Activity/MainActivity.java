@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
@@ -31,6 +33,21 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,10 +58,19 @@ import call_recording.bkarogyam.com.management.Config.DbHandler;
 import call_recording.bkarogyam.com.management.Fragments.dialog_browse_directory;
 import call_recording.bkarogyam.com.management.Fragments.dialog_change_pwd;
 import call_recording.bkarogyam.com.management.JSONBody.CallingListBody;
+import call_recording.bkarogyam.com.management.JSONBody.DispositionBody;
+import call_recording.bkarogyam.com.management.JSONBody.IncomingBody;
+import call_recording.bkarogyam.com.management.JSONBody.UploadBody;
 import call_recording.bkarogyam.com.management.Models.CallingListPOJO;
+import call_recording.bkarogyam.com.management.Models.DispositionPOJO;
+import call_recording.bkarogyam.com.management.Models.IncomingPOJO;
+import call_recording.bkarogyam.com.management.Models.RemarkPOJO;
 import call_recording.bkarogyam.com.management.Networking.ServiceGenerator;
 import call_recording.bkarogyam.com.management.R;
 import call_recording.bkarogyam.com.management.Requests.CallingListRequest;
+import call_recording.bkarogyam.com.management.Requests.Disposition2Request;
+import call_recording.bkarogyam.com.management.Requests.IncomingRequest;
+import call_recording.bkarogyam.com.management.Requests.UploadRequest;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -115,9 +141,255 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
         callingList();
+        if(DbHandler.contains(MainActivity.this,"curr_chosen_directory"))
+            uploadOutgoingFiles();
 
     }
 
+
+    public void uploadOutgoingFiles(){
+
+        File dir=null;
+        String path = Environment.getExternalStorageDirectory().toString()+"/" + DbHandler.getString(MainActivity.this,"curr_chosen_directory","").replaceAll("%20"," ");
+        dir = new File(path);
+
+        File[] files = dir.listFiles();
+
+
+        for (File file : files) {
+            if (file.getName().startsWith("BKOut_")) {
+                String call_id2=file.getName().split("_")[1];
+                String callid=call_id2.split(".amr")[0];
+                nullFeedback(callid);
+
+                uploadFile(file.getAbsolutePath(),file.getName(),callid);
+
+            }
+
+        }
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+        uploadIncomingFiles();
+    }
+
+    void nullFeedback(String callid){
+        final DispositionBody dispositionBody=new DispositionBody(null,callid);
+
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        Disposition2Request dispositionsRequest= ServiceGenerator.createService(Disposition2Request.class, DbHandler.getString(this,"bearer",""));
+        Call<DispositionPOJO> call=dispositionsRequest.call(dispositionBody);
+        call.enqueue(new Callback<DispositionPOJO>() {
+            @Override
+            public void onResponse(Call<DispositionPOJO> call, Response<DispositionPOJO> response) {
+                progressDialog.dismiss();
+                if(response.code()==200){
+                    Log.e("null","nullable");
+                    return;
+                }
+                else if (response.code()==403){
+                    Toast.makeText(MainActivity.this,"Not Authorized",Toast.LENGTH_LONG).show();
+                    DbHandler.unsetSession(MainActivity.this,"isforcedLoggedOut");
+                }
+                else{
+                    new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    onBackPressed();
+                                }
+                            }).create().show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DispositionPOJO> call, Throwable t) {
+                progressDialog.dismiss();
+                new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                onBackPressed();
+                            }
+                        }).create().show();
+            }
+        });
+    }
+
+    public void uploadIncomingFiles(){
+        File dir=null;
+        String path = Environment.getExternalStorageDirectory().toString()+"/" + DbHandler.getString(MainActivity.this,"curr_chosen_directory","").replaceAll("%20"," ");
+        dir = new File(path);
+
+        File[] files = dir.listFiles();
+
+        for (final File file : files) {
+            if (file.getName().startsWith("BKInNum_")) {
+                progressDialog.show();
+
+
+                String cal_nu2 = file.getName().split("_")[1];
+                final String num = cal_nu2.split(".amr")[0];
+
+                IncomingBody incomingBody = new IncomingBody(num, "I");
+                IncomingRequest incomingRequest = ServiceGenerator.createService(IncomingRequest.class, DbHandler.getString(MainActivity.this, "bearer", ""));
+                Call<IncomingPOJO> call1 = incomingRequest.call(incomingBody);
+                call1.enqueue(new Callback<IncomingPOJO>() {
+                    @Override
+                    public void onResponse(Call<IncomingPOJO> call, Response<IncomingPOJO> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200) {
+                            nullFeedback(response.body().getCall_id());
+                            uploadFile(file.getAbsolutePath(), file.getName(), response.body().getCall_id());
+                        } else if (response.code() == 403) {
+                            Toast.makeText(MainActivity.this, "Not Authorized", Toast.LENGTH_LONG).show();
+                            DbHandler.unsetSession(MainActivity.this, "isforcedLoggedOut");
+                        } else {
+                            new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            onBackPressed();
+                                        }
+                                    }).create().show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<IncomingPOJO> call, Throwable t) {
+                        progressDialog.dismiss();
+                        new AlertDialog.Builder(MainActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        onBackPressed();
+                                    }
+                                }).create().show();
+                    }
+                });
+
+
+            }
+            else if(file.getName().startsWith("BKIn_")) {
+
+                uploadFile(file.getAbsolutePath(), file.getName(), file.getName().split("_")[1]);
+
+            }
+
+        }
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+
+    }
+
+    private void uploadFile(final String filePath, final String fileName,final String call_id) {
+        class UF extends AsyncTask<String, String, String> {
+            String responseString="";
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                String fp = params[0];
+                try {
+                    HttpPost httpPost;
+
+                    HttpClient httpClient = new DefaultHttpClient();
+                    httpPost = new HttpPost("http://139.59.83.5:8081/api/uploads");
+                    httpPost.addHeader("Authorization",DbHandler.getString(MainActivity.this,"bearer",""));
+
+                    File file = new File(fp);
+
+                    FileBody fileBody = new FileBody(file);
+                    MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+                    multipartEntity.addPart("recording", fileBody);
+                    httpPost.setEntity(multipartEntity);
+
+                    HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                    HttpEntity entity = httpResponse.getEntity();
+                    int statusCode = httpResponse.getStatusLine().getStatusCode();
+                    if (statusCode == 200) {
+                        responseString = EntityUtils.toString(entity);
+                    } else {
+                        responseString = "Error occurred! Http Status Code: "
+                                + statusCode;
+                    }
+
+                } catch (ClientProtocolException e) {
+                    responseString = e.toString();
+                } catch (IOException e) {
+                    responseString = e.toString();
+                }
+
+                return responseString;
+
+            }
+
+            @Override
+            protected void onPostExecute(final String result) {
+
+                Log.e("TAG", "Response from server: " + result);
+
+                super.onPostExecute(result);
+                String s = result.trim();
+                Log.e("TAG", "Response from server: " + s);
+
+                try {
+                    JSONObject jsonObject=new JSONObject(result);
+                    String filename=jsonObject.getString("filename");
+                    Log.e("fname",filename+" "+call_id);
+
+                    //progressDialog.show();
+                    UploadBody uploadBody=new UploadBody(filename,call_id);
+                    Log.e("str_test",new Gson().toJson(uploadBody));
+
+                    UploadRequest uploadRequest=ServiceGenerator.createService(UploadRequest.class,DbHandler.getString(MainActivity.this,"bearer",""));
+                    Call<RemarkPOJO> call=uploadRequest.call(uploadBody);
+                    call.enqueue(new Callback<RemarkPOJO>() {
+                        @Override
+                        public void onResponse(Call<RemarkPOJO> call, Response<RemarkPOJO> response) {
+                            //progressDialog.dismiss();
+                            File fil=new File(filePath);
+                            boolean bool = fil.delete();
+
+                            Log.e("error1234",String.valueOf(response.code()));
+                            //Log.e("error123",response.body());
+                        }
+
+                        @Override
+                        public void onFailure(Call<RemarkPOJO> call, Throwable t) {
+                            // progressDialog.dismiss();
+                            Log.e("update_Error",t.getMessage());
+                        }
+                    });
+                    if(DbHandler.contains(MainActivity.this,"call_id"))
+                        DbHandler.remove(MainActivity.this,"call_id");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+
+
+
+        UF l = new UF();
+        l.execute(filePath,fileName);
+
+
+    }
 
     void callingList(){
         progressDialog.show();

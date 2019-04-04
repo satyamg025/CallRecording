@@ -385,8 +385,6 @@ public class FeedbackActivity extends Activity {
                 String s = result.trim();
                 Log.e("TAG", "Response from server: " + s);
 
-                File fil=new File(filePath);
-                boolean bool = fil.delete();
                 try {
                     JSONObject jsonObject=new JSONObject(result);
                     String filename=jsonObject.getString("filename");
@@ -402,6 +400,9 @@ public class FeedbackActivity extends Activity {
                         @Override
                         public void onResponse(Call<RemarkPOJO> call, Response<RemarkPOJO> response) {
                             //progressDialog.dismiss();
+                            File fil=new File(filePath);
+                            boolean bool = fil.delete();
+
                             Log.e("error1234",String.valueOf(response.code()));
                             //Log.e("error123",response.body());
                         }
@@ -513,12 +514,11 @@ public class FeedbackActivity extends Activity {
         File[] files = dir.listFiles();
 
         for (final File file : files) {
-            if (file.getName().startsWith("BKIn_")) {
+            if (file.getName().startsWith("BKInNum_")) {
                 progressDialog.show();
                 Log.e("fname1",file.getName());
                 Log.e("fname2",fname);
 
-                if(!file.getName().equals(fname)) {
                     String cal_nu2 = file.getName().split("_")[1];
                     final String num = cal_nu2.split(".amr")[0];
 
@@ -558,12 +558,12 @@ public class FeedbackActivity extends Activity {
                                     }).create().show();
                         }
                     });
-                }
-                else {
-                    Log.e("driect_upload","upload");
-                    uploadFile(file.getAbsolutePath(), file.getName(), call_id);
 
-                }
+
+            }
+            else if(file.getName().startsWith("BKIn_")) {
+                Log.e("driect_upload","upload");
+                uploadFile(file.getAbsolutePath(), file.getName(), call_id);
 
             }
 
