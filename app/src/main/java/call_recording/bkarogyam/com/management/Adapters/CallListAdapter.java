@@ -4,9 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -180,7 +180,7 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.view_h
                                                 DbHandler.unsetSession(context, "isforcedLoggedOut");
                                             } else {
                                                 progressDialog.dismiss();
-                                                new android.support.v7.app.AlertDialog.Builder(context).setTitle("Error").setMessage("Unable to connect to server")
+                                                new androidx.appcompat.app.AlertDialog.Builder(context).setTitle("Error").setMessage("Unable to connect to server")
                                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -193,7 +193,7 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListAdapter.view_h
                                         @Override
                                         public void onFailure(Call<HistoryDataPOJO> call, Throwable t) {
                                             progressDialog.dismiss();
-                                            new android.support.v7.app.AlertDialog.Builder(context).setTitle("Error").setMessage("Unable to connect to server")
+                                            new androidx.appcompat.app.AlertDialog.Builder(context).setTitle("Error").setMessage("Unable to connect to server")
                                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialogInterface, int i) {

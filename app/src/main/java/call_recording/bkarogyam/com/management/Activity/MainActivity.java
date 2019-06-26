@@ -11,14 +11,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.util.Log;
@@ -176,9 +176,9 @@ public class MainActivity extends AppCompatActivity {
     void nullFeedback(String callid){
         final DispositionBody dispositionBody=new DispositionBody(null,callid);
 
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
+//        progressDialog=new ProgressDialog(this);
+//        progressDialog.setMessage("Loading...");
+//        progressDialog.setCancelable(false);
         progressDialog.show();
 
         Disposition2Request dispositionsRequest= ServiceGenerator.createService(Disposition2Request.class, DbHandler.getString(this,"bearer",""));
@@ -301,6 +301,10 @@ public class MainActivity extends AppCompatActivity {
                 String fp = params[0];
                 try {
                     HttpPost httpPost;
+
+                    Log.e("fpath2",filePath);
+                    Log.e("fname2",fileName);
+                    Log.e("c_id2",call_id);
 
                     HttpClient httpClient = new DefaultHttpClient();
                     httpPost = new HttpPost("http://139.59.83.5:8081/api/uploads");

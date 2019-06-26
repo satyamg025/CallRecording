@@ -40,7 +40,8 @@
         android:roundIcon="@drawable/bk"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        >
         <activity
             android:name="call_recording.bkarogyam.com.management.Activity.AdminActivity"
             android:label="@string/title_activity_admin"></activity>
@@ -100,6 +101,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="6a8c01f41b14960d6f7a1b974c9a47457be0f4cb" />
     </application>
 
 </manifest>

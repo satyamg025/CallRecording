@@ -12,8 +12,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 

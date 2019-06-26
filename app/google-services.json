@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "990348697843",
+    "firebase_url": "https://bkarogyam-c5f11.firebaseio.com",
+    "project_id": "bkarogyam-c5f11",
+    "storage_bucket": "bkarogyam-c5f11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990348697843:android:8f7b2f2164ddfd94",
+        "android_client_info": {
+          "package_name": "call_recording.bkarogyam.com.management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990348697843-7aioj59288dlukmoa0vv2jd28m81aatv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApu3Hr5xLMvLSCwomE8Nu0M8YoxlF4NiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990348697843-7aioj59288dlukmoa0vv2jd28m81aatv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

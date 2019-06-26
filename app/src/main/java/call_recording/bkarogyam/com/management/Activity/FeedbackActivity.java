@@ -6,13 +6,12 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -253,26 +252,15 @@ public class FeedbackActivity extends Activity {
                     DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
                 }
                 else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
+                    Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DispositionPOJO> call, Throwable t) {
                 progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
+                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -297,26 +285,15 @@ public class FeedbackActivity extends Activity {
                     DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
                 }
                 else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
+                    Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RemarkPOJO> call, Throwable t) {
                 progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
+                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -342,6 +319,10 @@ public class FeedbackActivity extends Activity {
                 String fp = params[0];
                 try {
                     HttpPost httpPost;
+
+                    Log.e("fpath2",filePath);
+                    Log.e("fname2",fileName);
+                    Log.e("c_id2",call_id);
 
                     HttpClient httpClient = new DefaultHttpClient();
                     httpPost = new HttpPost("http://139.59.83.5:8081/api/uploads");
@@ -467,6 +448,7 @@ public class FeedbackActivity extends Activity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        Log.e("body",new Gson().toJson(dispositionBody));
         Disposition2Request dispositionsRequest= ServiceGenerator.createService(Disposition2Request.class, DbHandler.getString(this,"bearer",""));
         Call<DispositionPOJO> call=dispositionsRequest.call(dispositionBody);
         call.enqueue(new Callback<DispositionPOJO>() {
@@ -474,6 +456,7 @@ public class FeedbackActivity extends Activity {
             public void onResponse(Call<DispositionPOJO> call, Response<DispositionPOJO> response) {
                 progressDialog.dismiss();
                 if(response.code()==200){
+                    Log.e("response",new Gson().toJson(response.body()));
                     Log.e("null","nullable");
                     return;
                 }
@@ -482,26 +465,14 @@ public class FeedbackActivity extends Activity {
                     DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
                 }
                 else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
+                    Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DispositionPOJO> call, Throwable t) {
                 progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
+                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -536,26 +507,15 @@ public class FeedbackActivity extends Activity {
                                 Toast.makeText(FeedbackActivity.this, "Not Authorized", Toast.LENGTH_LONG).show();
                                 DbHandler.unsetSession(FeedbackActivity.this, "isforcedLoggedOut");
                             } else {
-                                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                onBackPressed();
-                                            }
-                                        }).create().show();
+                                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<IncomingPOJO> call, Throwable t) {
                             progressDialog.dismiss();
-                            new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            onBackPressed();
-                                        }
-                                    }).create().show();
+                            Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
+
                         }
                     });
 
@@ -599,26 +559,15 @@ public class FeedbackActivity extends Activity {
                     DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
                 }
                 else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
+                    Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RemarkPOJO> call, Throwable t) {
                 progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
+                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -632,6 +581,7 @@ public class FeedbackActivity extends Activity {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        Log.e("radio_body",new Gson().toJson(dispositionBody));
         Disposition2Request dispositionsRequest= ServiceGenerator.createService(Disposition2Request.class, DbHandler.getString(this,"bearer",""));
         Call<DispositionPOJO> call=dispositionsRequest.call(dispositionBody);
         call.enqueue(new Callback<DispositionPOJO>() {
@@ -640,6 +590,7 @@ public class FeedbackActivity extends Activity {
                 progressDialog.dismiss();
                 if(response.code()==200){
 
+                    Log.e("response2",new Gson().toJson(response.body()));
                     dispositionDatumPOJOList=response.body().getDispositions();
                     if (dispositionDatumPOJOList != null) {
                         if (response.body().getDispositions().size() > 0) {
@@ -717,26 +668,15 @@ public class FeedbackActivity extends Activity {
                     DbHandler.unsetSession(FeedbackActivity.this,"isforcedLoggedOut");
                 }
                 else{
-                    new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    onBackPressed();
-                                }
-                            }).create().show();
+                    Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DispositionPOJO> call, Throwable t) {
                 progressDialog.dismiss();
-                new AlertDialog.Builder(FeedbackActivity.this).setTitle("Error").setMessage("Unable to connect to server")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                onBackPressed();
-                            }
-                        }).create().show();
+                Toast.makeText(FeedbackActivity.this,"Unable to connect to server",Toast.LENGTH_LONG).show();
+
             }
         });
 

@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -113,6 +113,7 @@ public class DbHandler {
             final ProgressDialog progressDialog = new ProgressDialog(context);
             progressDialog.setMessage("Loading...");
             progressDialog.setCancelable(false);
+            progressDialog.show();
 
             DbHandler.putString(context, "bearer", bearer);
             DbHandler.putString(context, "user_type", user_type);

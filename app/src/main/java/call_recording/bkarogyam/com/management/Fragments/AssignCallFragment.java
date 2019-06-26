@@ -5,7 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,7 +107,7 @@ public class AssignCallFragment extends Fragment {
                 if (response.code() == 200) {
                     List<EmployeeDataPOJO> employeeDataPOJOS=response.body().getEmployees();
                     if(employeeDataPOJOS.size()==0){
-                        new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("No employee assigned")
+                        new androidx.appcompat.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("No employee assigned")
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -129,7 +129,7 @@ public class AssignCallFragment extends Fragment {
                     Toast.makeText(getContext(), "Not Authorized", Toast.LENGTH_LONG).show();
                     DbHandler.unsetSession(getContext(), "isforcedLoggedOut");
                 } else {
-                    new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
+                    new androidx.appcompat.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -143,7 +143,7 @@ public class AssignCallFragment extends Fragment {
             public void onFailure(Call<EmployeeResponsePOJO> call, Throwable throwable) {
                 progressDialog.dismiss();
                 Log.e("res_Error", throwable.getMessage());
-                new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
+                new androidx.appcompat.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

@@ -3,7 +3,7 @@ package call_recording.bkarogyam.com.management.Fragments;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,7 +93,7 @@ public class CallHistoryFragment extends Fragment {
                                 DbHandler.unsetSession(getContext(), "isforcedLoggedOut");
                             } else {
                                 progressDialog.dismiss();
-                                new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
+                                new androidx.appcompat.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -107,7 +107,7 @@ public class CallHistoryFragment extends Fragment {
                         public void onFailure(Call<HistoryDataPOJO> call, Throwable t) {
                             progressDialog.dismiss();
                             Log.e("error_fail",t.getMessage());
-                            new android.support.v7.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
+                            new androidx.appcompat.app.AlertDialog.Builder(getContext()).setTitle("Error").setMessage("Unable to connect to server")
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {

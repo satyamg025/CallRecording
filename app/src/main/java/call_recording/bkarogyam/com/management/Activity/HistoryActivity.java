@@ -2,7 +2,7 @@ package call_recording.bkarogyam.com.management.Activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
@@ -88,7 +88,7 @@ public class HistoryActivity extends AppCompatActivity {
                                 DbHandler.unsetSession(HistoryActivity.this, "isforcedLoggedOut");
                             } else {
                                 progressDialog.dismiss();
-                                new android.support.v7.app.AlertDialog.Builder(HistoryActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                                new androidx.appcompat.app.AlertDialog.Builder(HistoryActivity.this).setTitle("Error").setMessage("Unable to connect to server")
                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -101,7 +101,7 @@ public class HistoryActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<HistoryDataPOJO> call, Throwable t) {
                             progressDialog.dismiss();
-                            new android.support.v7.app.AlertDialog.Builder(HistoryActivity.this).setTitle("Error").setMessage("Unable to connect to server")
+                            new androidx.appcompat.app.AlertDialog.Builder(HistoryActivity.this).setTitle("Error").setMessage("Unable to connect to server")
                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {

@@ -41,7 +41,7 @@
                 <!-- Roll No Label -->
 
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/input_roll_layout"
@@ -53,10 +53,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Email-id" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Password Label -->
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/input_password_layout"
@@ -70,9 +70,9 @@
                         android:layout_height="wrap_content"
                         android:hint="Password"
                         android:inputType="textPassword" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_login"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
